@@ -1,0 +1,118 @@
+# This schema uses Apollo Connectors, a declarative programming model for
+# GraphQL that allows you to plug in your existing REST services directly into
+# a graph. To learn more, visit Apollo's documentation: 🔗https://www.apollographql.com/docs/graphos/schema-design/connectors
+
+# Guided tutorial: 🔗 https://www.apollographql.com/docs/graphos/get-started/guides/rest
+
+extend schema
+  @link( # Enable this schema to use Apollo Federation features
+    url: "https://specs.apollo.dev/federation/v2.11"
+  )
+  @link( # Enable this schema to use Apollo Connectors
+    url: "https://specs.apollo.dev/connect/v0.2"
+    import: ["@connect", "@source"]
+  )
+
+# ✏️ This schema is using a demo REST API as its @source. Replace the `name` and `baseURL` of it with your own REST API.
+@source(
+  name: "ecomm"
+  # A @source directive defines a shared data source for multiple Connectors.
+  http: {
+    baseURL: "https://ecommerce.demo-api.apollo.dev/" 
+    headers: [
+      # If your API requires headers, add them here and in your router.yaml file.
+      # Example:
+      # { name: "name", value: "{$config.apiKey}" }
+    ]
+  }
+)
+
+# ✏️ Replace this example type with your own object type.
+type Product {
+  id: ID!
+  name: String
+  description: String
+  reviews: [Review] @connect(
+    source: "ecomm"
+    http: { GET: "/products/{$this.id}/reviews" } # When you query here, it is getting the id from the parent Product type and plugging it into the URL.
+    selection: """
+    $.reviews {
+      id
+      rating
+      comment
+    }
+    """
+  )
+}
+
+type Review {
+  id: ID!
+  rating: Float
+  comment: String
+}
+
+# ✏️ Set up your Query field with the endpoint that returns the data you want.
+
+# ✏️ Set up your Mutation field with the endpoint that allows you to modify data.
+# type Mutation {
+#   # 1. Add all missing arguments here
+#   setProduct(
+#     id: ID!, 
+#     name: String!, 
+#     description: String, 
+#     price: Float, 
+#     inventory: Int
+#   ): Product
+#     @connect(
+#       source: "ecomm", # 2. Ensure the 'source' is specified if not using a full URL
+#       http: {
+#         method: PUT, # 3. Note: Some versions prefer 'method: PUT' or 'PUT: "url"'
+#         url: "https://myapi.dev/products/{$args.id}",
+#         body: """
+#         {
+#           "name": "{$args.name}",
+#           "description": "{$args.description}",
+#           "price": {$args.price},
+#           "inventory": {$args.inventory}
+#         }
+#         """
+#       }
+#       selection: "$.id" # 4. Use JSONPath syntax ($.id) for the selection
+#     )
+# }
+
+# 
+
+type Query {
+  # The Query.products field uses @connect to connect to the /products endpoint in the "ecomm" source.
+  # To check out the JSON response for this endpoint, go to 🔗 https://ecommerce.demo-api.apollo.dev/products.
+  Products: [Product]
+    # A @connect directive defines the API data source of a GraphQL schema field.
+    @connect(
+      source: "ecomm"
+      http: { GET: "/products" } # GET, POST, PUT, PATCH, DELETE.
+      # Use @connect for any field that should be resolved by your REST API endpoints.
+      # Use the selection argument to map fields from the JSON response to the type.
+      # You can do more with this selection mapping. Learn more at 🔗 https://www.apollographql.com/docs/graphos/schema-design/connectors/responses
+      selection: """
+      $.products {
+        id
+        name
+        description
+      }
+      """
+    )
+
+  Reviews(id: ID!): [Review]
+    @connect(
+      source: "ecomm"
+      http: { GET: "/products/{$args.id}/reviews" }
+      selection: """
+      $.reviews {
+        id
+        rating
+        comment
+      }
+      """
+    )
+}
