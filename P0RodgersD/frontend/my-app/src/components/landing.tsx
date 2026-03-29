@@ -1,6 +1,6 @@
 import React from 'react';
 
-export const Landing: React.FC = () => {
+export const Landing: React.FC<{ service: any }> = ({ service }) => {
     return (
         <div className="bg-white text-gray-900 selection:bg-[#7964E3] selection:text-white">
 

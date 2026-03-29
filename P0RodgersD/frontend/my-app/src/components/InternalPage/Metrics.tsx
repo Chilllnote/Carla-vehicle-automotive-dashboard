@@ -6,7 +6,7 @@ interface Metric {
     icon?: string;
 }
 
-const Metrics: React.FC = () => {
+const Metrics: React.FC<{ service: any }> = ({ service }) => {
     const metrics: Metric[] = [
         { label: 'Total Users', value: '1,234', icon: '👥' },
         { label: 'Revenue', value: '$45,678', icon: '💰' },

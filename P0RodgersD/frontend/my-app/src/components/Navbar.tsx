@@ -37,7 +37,7 @@ export const Navbar: React.FC = () => {
                     {/* Profile Action */}
                     <li>
                         <Link 
-                            to="/dashboard" 
+                            to="/employee-profile" 
                             className="bg-white/10 border border-white/20 px-5 py-2 rounded-full hover:bg-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-all active:scale-95"
                         >
                             DonovR

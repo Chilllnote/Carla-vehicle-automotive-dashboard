@@ -1,4 +1,8 @@
 import axios, { type AxiosInstance } from 'axios';
+import type { EmployeeMetadataDTO } from '../dtos/type';
+
+
+const API_BASE_URL = 'http://localhost:8080/api';
 
 export interface EmployeeMetadata {
     id: string;
@@ -14,7 +18,7 @@ export interface EmployeeMetadata {
 class EmployeeMetadataService {
     private api: AxiosInstance;
 
-    constructor(baseURL: string = '/api/employees') {
+    constructor(baseURL: string = API_BASE_URL) {
         this.api = axios.create({ baseURL });
     }
 
@@ -28,8 +32,8 @@ class EmployeeMetadataService {
         return this.api.get<EmployeeMetadata[]>('/');
     }
 
-    async getById(id: string) {
-        return this.api.get<EmployeeMetadata>(`/${id}`);
+    async getByUsername(username: string) {
+        return (await this.api.get<EmployeeMetadataDTO>(`/employee-metadata-username?username=${username}`)).data;
     }
 
     // Update

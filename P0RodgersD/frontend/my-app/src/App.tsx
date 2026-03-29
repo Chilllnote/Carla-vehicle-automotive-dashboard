@@ -1,16 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import reactLogo from './assets/react.svg'
 import viteLogo from './assets/vite.svg'
 import heroImg from './assets/hero.png'
 import './App.css'
 import { Route, Routes, Outlet } from 'react-router-dom'
 import Landing from './components/landing'
-import EmployeeDashboard from './components/InternalPage/EmployeeDashboard'
 import Metrics from './components/InternalPage/Metrics'
 import { Navbar } from './components/Navbar'
 import TestDashboard from './components/InternalPage/TestDashboard'
 import Sidebar  from './components/InternalPage/Sidebar'
 import EmployeeProfile from './components/InternalPage/EmployeeProfile'
+import Settings from './components/InternalPage/Settings'
+import Algorithms from './components/InternalPage/Algorithms'
+import ApplicationService from './components/service/ApplicationService'
 
 // A wrapper for pages that NEED the sidebar
 const DashboardLayout = ({ isSidebarOpen, toggleSidebar }: any) => {
@@ -47,14 +49,15 @@ function App() {
       <div className="pt-16"> {/* Offset for the fixed Navbar */}
         <Routes>
           {/* Public Route: No Sidebar */}
-          <Route path="/" element={<Landing />} />
+          <Route path="/" element={<Landing service={ApplicationService} />} />
 
           {/* Protected/App Routes: With Sidebar */}
-          <Route element={<DashboardLayout isSidebarOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} />}>
-            <Route path="/dashboard" element={<EmployeeDashboard />} />
-            <Route path="/metrics" element={<Metrics />} />
-            <Route path="/test-dashboard" element={<TestDashboard />} />
-            <Route path="/employee-profile" element={<EmployeeProfile />} />
+          <Route element={<DashboardLayout isSidebarOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} service={ApplicationService} />}>
+            <Route path="/metrics" element={<Metrics service={ApplicationService} />} />
+            <Route path="/test-dashboard" element={<TestDashboard service={ApplicationService} />} />
+            <Route path="/employee-profile" element={<EmployeeProfile service={ApplicationService} />} />
+            <Route path="/settings" element={<Settings service={ApplicationService} />} /> {/* Placeholder for Settings */}
+            <Route path="/algos" element={<Algorithms service={ApplicationService} />} /> {/* Placeholder for Algorithms */}
           </Route>
         </Routes>
       </div>

@@ -1,10 +1,21 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { 
   Bell, MessageSquare, ClipboardList, Play, 
-  CheckCircle2, XCircle, Plus, Search, Clock, Zap 
+  CheckCircle2, XCircle, Plus, Search, Clock, Zap, 
+  BadgeCheck,
+  Fingerprint,
+  Briefcase,
+  Mail
 } from 'lucide-react';
 
-const EmployeeProfile = () => {
+import EmployeeMetadataService from '../../utils/EmployeeMetaData';
+import type { EmployeeMetadataDTO } from '../../dtos/type';
+
+const EmployeeProfile = ({ service }: { service: any }) => {
+
+  // Queries
+  // const { data, isLoading } = useQuery(['employee', service.currentUser?.username], () => EmployeeMetadataService.getByUsername(service.currentUser?.username));
+
   const [notes, setNotes] = useState("");
 
   const notifications = [
@@ -18,7 +29,52 @@ const EmployeeProfile = () => {
     { id: 'TX-985', name: 'Adaptive Cruise Control', rate: '100%', status: 'success' },
   ];
 
+  // This data would typically come from your Spring Boot /user/{id} endpoint
+  const userData = {
+      id: "EMP-9921", // Mapping to @Id
+      name: "Donov Rodgers", // Mapping to name
+      email: "d.rodgers@algotest.io", // Mapping to email
+      department: "Core Engineering", // Mapping to department
+      role: "Senior SDET" // Mapping to role
+  };
+
+  const handleQuickLaunch = async () => {
+    try {
+      // Replace 'donovr' with your dynamic username variable
+      const data = await EmployeeMetadataService.getByUsername("donovr"); 
+      console.log("Employee Metadata JSON:", data);
+    } catch (error) {
+      console.error("Failed to fetch metadata:", error);
+    }
+  };  
+
+  const [employeeData, setEmployeeData] = useState<EmployeeMetadataDTO | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        // Direct call to the instance created above
+        const result = await EmployeeMetadataService.getByUsername(service.currentUser?.username);
+        setEmployeeData(result);
+      } catch (err) {
+        console.error("Error loading dashboard data:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (service.currentUser?.username) fetchData();
+  }, [service.currentUser?.username]);
+
+    // Accessing by key: employeeData['name'] or employeeData.name
+    if (loading) return <div>Initializing...</div>;
+
   return (
+
+
+    
     <div className="flex-1 w-full bg-gray-50 p-6 lg:p-10">
       {/* Header Area */}
       <div className="flex items-center justify-between mb-8">
@@ -41,7 +97,7 @@ const EmployeeProfile = () => {
         <div className="lg:col-span-2 space-y-8">
           
           {/* Notifications Section */}
-          <section className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
+          {/* <section className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
             <div className="p-6 border-b border-gray-100 flex justify-between items-center">
               <h3 className="font-bold text-gray-800 flex items-center gap-2">
                 <Zap size={18} className="text-[#7964E3]" /> Live Updates
@@ -61,7 +117,51 @@ const EmployeeProfile = () => {
                 </div>
               ))}
             </div>
-          </section>
+          </section> */}
+
+            {/* 1. New Entity Header Section */}
+            <section className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="lg:col-span-2 bg-white rounded-3xl border border-gray-200 shadow-sm p-8 flex items-start gap-6">
+                    <div className="w-24 h-24 rounded-2xl bg-gradient-to-br from-[#7964E3] to-[#5a48c3] flex items-center justify-center text-white text-3xl font-black shadow-lg shadow-[#7964E3]/30">
+                        {userData.name.split(' ').map(n => n[0]).join('')}
+                    </div>
+                    
+                    <div className="flex-1">
+                        <div className="flex items-center gap-3 mb-1">
+                            <h2 className="text-3xl font-black text-gray-900">{userData.name}</h2>
+                            <span className="px-3 py-1 bg-[#7964E3]/10 text-[#7964E3] text-[10px] font-bold uppercase rounded-full tracking-wider border border-[#7964E3]/20">
+                                {userData.role}
+                            </span>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-2 mt-4">
+                            <div className="flex items-center gap-2 text-gray-500">
+                                <Mail size={16} className="text-gray-400" />
+                                <span className="text-sm font-medium">{userData.email}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-500">
+                                <Briefcase size={16} className="text-gray-400" />
+                                <span className="text-sm font-medium">{userData.department}</span>
+                            </div>
+                            <div className="flex items-center gap-2 text-gray-500">
+                                <Fingerprint size={16} className="text-gray-400" />
+                                <span className="text-xs font-mono uppercase tracking-tighter">UID: {userData.id}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Quick Stats Card
+                <div className="bg-[#1a1a1c] rounded-3xl p-8 text-white flex flex-col justify-between">
+                    <div>
+                        <p className="text-gray-400 text-xs font-bold uppercase tracking-widest mb-1">Total System Uptime</p>
+                        <h4 className="text-4xl font-black">99.8<span className="text-[#7964E3]">%</span></h4>
+                    </div>
+                    <div className="flex items-center gap-2 text-green-400 text-sm font-bold">
+                        <BadgeCheck size={18} /> Verified Developer Account
+                    </div>
+                </div> */}
+            </section>
 
           {/* Previous Tasks & Test History Table */}
           <section className="bg-white rounded-3xl border border-gray-200 shadow-sm overflow-hidden">
@@ -117,7 +217,9 @@ const EmployeeProfile = () => {
             <h3 className="text-xl font-bold mb-2">Resume Validation</h3>
             <p className="text-[#e0dbff] text-sm mb-6 font-medium italic opacity-90">Auto-load: "Rainy_Highway_Full_Sensor_Stack"</p>
             
-            <button className="w-full py-4 bg-white text-[#7964E3] font-black rounded-2xl shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2">
+            <button 
+            className="w-full py-4 bg-white text-[#7964E3] font-black rounded-2xl shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex items-center justify-center gap-2"
+            onClick={() => handleQuickLaunch()}>
               <Play size={20} fill="currentColor" />
               Quick Launch Test
             </button>
@@ -147,3 +249,7 @@ const EmployeeProfile = () => {
 };
 
 export default EmployeeProfile;
+
+function useQuery(arg0: any[], arg1: () => any): { data: any; isLoading: any; } {
+  throw new Error('Function not implemented.');
+}
