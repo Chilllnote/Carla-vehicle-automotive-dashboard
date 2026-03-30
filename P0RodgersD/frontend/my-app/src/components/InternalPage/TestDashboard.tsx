@@ -1,9 +1,55 @@
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Play, Square, Cpu, Activity, MapPin, Gauge } from 'lucide-react';
+import pythonService from '../service/PythonService';
 
 export const TestDashboard: React.FC<{ service: any }> = ({ service }) => {
     const [isRunning, setIsRunning] = useState(false);
     const [selectedAlgo, setSelectedAlgo] = useState("Adaptive Cruise Control");
+    const [telemetry, setTelemetry] = useState(null);
+    const [status, setStatus] = useState("Idle");
+
+    const socketRef = useRef<WebSocket | null>(null);
+
+    const launchSimulation = async () => {
+        const wsUrl = await pythonService.startCarlaTest(9000, "Town02", "vehicle.tesla.model3", 100.0, 200.0, 20.0);
+
+        if (wsUrl) {
+            // Assign to the REF, not a local const
+            socketRef.current = new WebSocket(wsUrl);
+
+            socketRef.current.onopen = () => setStatus("Connected");
+
+            socketRef.current.onmessage = (event) => {
+                console.log("Received telemetry:", event.data);
+                const data = JSON.parse(event.data);
+                setTelemetry(data); 
+            };
+
+            socketRef.current.onclose = () => {
+                console.log("WebSocket closed");
+                setStatus("Disconnected");
+                setIsRunning(false);
+                socketRef.current = null; // Clear the ref
+            };
+        }
+    };
+
+    // Add a separate stop function
+    const stopSimulation = () => {
+        if (socketRef.current) {
+            socketRef.current.close(); // This triggers Python's finally block!
+        }
+    };
+
+    // useEffect(() => {
+    //     return () => {
+    //         // This ensures that if the user leaves the page or 
+    //         // the component rerenders, the socket is killed.
+    //         if (socketRef.current) {
+    //             socketRef.current.close();
+    //         }
+    //     };
+    // }, []);
 
     return (
         <div className="flex h-full p-6 gap-6 bg-gray-50">
@@ -19,15 +65,15 @@ export const TestDashboard: React.FC<{ service: any }> = ({ service }) => {
                     onChange={(e) => setSelectedAlgo(e.target.value)}
                     className="w-full p-3 bg-gray-50 border border-gray-200 rounded-xl mb-6 outline-none focus:ring-2 focus:ring-[#7964E3]"
                 >
-                    {/* Make it so that this is a queried list based on categories */}
+                    {/* TO-DO: Make it so that this is a queried list based on categories */}
                     <option>Adaptive Cruise Control</option>
                     <option>Lane Keeping Assist</option>
                     <option>Emergency Braking</option>
                 </select>
 
                 <button 
-                    onClick={() => setIsRunning(!isRunning)}
-                    className={`w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
+                    onClick={() => launchSimulation()}
+                    className={` hover:bg-blue-300 w-full py-4 rounded-xl font-bold flex items-center justify-center gap-2 transition-all ${
                         isRunning ? 'bg-red-500 text-white' : 'bg-[#7964E3] text-white'
                     }`}
                 >
