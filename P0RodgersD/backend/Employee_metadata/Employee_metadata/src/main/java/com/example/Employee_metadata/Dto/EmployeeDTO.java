@@ -40,6 +40,8 @@ public class EmployeeDTO {
         private String department;
         private String role;
 
+        private List<NoteDTO.SentNoteDTO> note;
+
         // Use a list of identifiers or basic types to avoid circular recursion
         private List<AlgorithmnDTOs.AlgorithmSummaryDTO> algorithm;
     }
@@ -67,6 +69,8 @@ public class EmployeeDTO {
 
         private String department;
         private String role;
+
+        private List<NoteDTO.SentNoteDTO> note;
 
         // Use a list of identifiers or basic types to avoid circular recursion
         private List<AlgorithmnDTOs.AlgorithmSummaryDTO> algorithm;

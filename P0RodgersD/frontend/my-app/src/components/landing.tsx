@@ -14,18 +14,24 @@ export const Landing: React.FC<{ service: any }> = ({ service }) => {
                         Automotive Excellence
                     </div>
                     <h2 className="text-5xl md:text-7xl font-extrabold text-white leading-tight mb-6">
-                        Test Automotive Algorithms <br />
+                        Test Your Algorithms <br />
                         <span className="text-[#7964E3]">with Confidence</span>
                     </h2>
                     <p className="text-xl text-gray-400 max-w-2xl mb-10">
                         A high-performance interface built to validate, simulate, and optimize vehicle control systems in real-time.
                     </p>
                     <div className="flex flex-col md:flex-row gap-4">
-                        <button className="px-8 py-4 bg-[#7964E3] text-white font-bold rounded-xl hover:bg-[#6650c9] transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-[#7964E3]/20">
+                        <button 
+                        className="px-8 py-4 bg-[#7964E3] text-white font-bold rounded-xl hover:bg-[#6650c9] transition-all transform hover:scale-105 active:scale-95 shadow-xl shadow-[#7964E3]/20"
+                        onClick={() => window.location.href = '/test-dashboard'}
+                        >
                             Start Testing Now
                         </button>
-                        <button className="px-8 py-4 bg-white/5 text-white font-bold rounded-xl border border-white/10 hover:bg-white/10 transition-all">
-                            View Documentation
+                        <button 
+                        className="px-8 py-4 bg-white/5 text-white font-bold rounded-xl border border-white/10 hover:bg-white/10 transition-all"
+                        onClick={() => window.location.href = '/algos'}
+                        >
+                            View Algorithms
                         </button>
                     </div>
                 </div>

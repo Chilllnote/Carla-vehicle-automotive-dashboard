@@ -26,5 +26,8 @@ public class Employee {
     private String role;
 
     @OneToMany(mappedBy = "employee")
+    private List<Note> notes;
+
+    @OneToMany(mappedBy = "employee")
     private List<Algorithmn> algorithmns;
 }

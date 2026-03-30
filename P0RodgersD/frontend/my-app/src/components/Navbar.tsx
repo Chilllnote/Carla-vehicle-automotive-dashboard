@@ -13,7 +13,7 @@ export const Navbar: React.FC = () => {
                 
                 {/* Logo - Uses Link for home navigation */}
                 <Link to="/" className="text-xl font-black tracking-tighter drop-shadow-md hover:opacity-90 transition-opacity">
-                    DeSoto <span className="text-white/80">Connect</span>
+                    Don's <span className="text-white/80">Algorithm Tests</span>
                 </Link>
 
                 {/* Navigation Links - Swapped <a> for <Link> */}
@@ -28,11 +28,11 @@ export const Navbar: React.FC = () => {
                             Simulator
                         </Link>
                     </li>
-                    <li>
+                    {/* <li>
                         <Link to="/metrics" className="hover:text-white/70 transition-colors drop-shadow-sm">
                             Metrics
                         </Link>
-                    </li>
+                    </li> */}
                     
                     {/* Profile Action */}
                     <li>

@@ -12,14 +12,19 @@ import Sidebar  from './components/InternalPage/Sidebar'
 import EmployeeProfile from './components/InternalPage/EmployeeProfile'
 import Settings from './components/InternalPage/Settings'
 import Algorithms from './components/InternalPage/Algorithms'
-import ApplicationService from './components/service/ApplicationService'
+import Login from './components/InternalPage/Login'
 
+import ProtectedRoute from './components/RouteGaurd/ProtectedRoute'
+import applicationService from './components/service/ApplicationService'
 // A wrapper for pages that NEED the sidebar
 const DashboardLayout = ({ isSidebarOpen, toggleSidebar }: any) => {
   return (
     <div className="flex min-h-[calc(100vh-64px)] w-full">
       {/* Sidebar remains fixed, so it doesn't take up "flex" space */}
-      <Sidebar isOpen={isSidebarOpen} onToggle={toggleSidebar} />
+      <Sidebar 
+      isOpen={isSidebarOpen} 
+      onToggle={toggleSidebar}
+      service={applicationService} />
       
       {/* 1. Remove ml-64/ml-20. 
          2. Use padding-left (pl-64) instead. Padding pushes internal content 
@@ -48,17 +53,29 @@ function App() {
 
       <div className="pt-16"> {/* Offset for the fixed Navbar */}
         <Routes>
-          {/* Public Route: No Sidebar */}
-          <Route path="/" element={<Landing service={ApplicationService} />} />
 
-          {/* Protected/App Routes: With Sidebar */}
-          <Route element={<DashboardLayout isSidebarOpen={isSidebarOpen} toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} service={ApplicationService} />}>
-            <Route path="/metrics" element={<Metrics service={ApplicationService} />} />
-            <Route path="/test-dashboard" element={<TestDashboard service={ApplicationService} />} />
-            <Route path="/employee-profile" element={<EmployeeProfile service={ApplicationService} />} />
-            <Route path="/settings" element={<Settings service={ApplicationService} />} /> {/* Placeholder for Settings */}
-            <Route path="/algos" element={<Algorithms service={ApplicationService} />} /> {/* Placeholder for Algorithms */}
+
+          {/* Public Routes */}
+          <Route path="/login" element={<Login service={applicationService} />} />
+          <Route path="/" element={<Landing service={applicationService} />} />
+
+          {/* Protected Group */}
+          <Route element={<ProtectedRoute service={applicationService} />}>
+            <Route element={
+              <DashboardLayout 
+                isSidebarOpen={isSidebarOpen} 
+                toggleSidebar={() => setIsSidebarOpen(!isSidebarOpen)} 
+                service={applicationService} 
+              />
+            }>
+              {/* <Route path="/metrics" element={<Metrics service={applicationService} />} /> */}
+              <Route path="/test-dashboard" element={<TestDashboard service={applicationService} />} />
+              <Route path="/employee-profile" element={<EmployeeProfile service={applicationService} />} />
+              <Route path="/settings" element={<Settings service={applicationService} />} />
+              <Route path="/algos" element={<Algorithms service={applicationService} />} />
+            </Route>
           </Route>
+
         </Routes>
       </div>
     </div>

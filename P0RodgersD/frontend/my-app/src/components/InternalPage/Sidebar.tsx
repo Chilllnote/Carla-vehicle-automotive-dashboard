@@ -1,24 +1,30 @@
 import React, { useState } from 'react';
 // 1. Added Beaker for the Tests section
 import { Home, BarChart2, Cpu, Settings, X, ChevronLeft, ChevronRight, LogOut, Beaker } from 'lucide-react';
-import { NavLink } from 'react-router-dom';
+import { Navigate, NavLink, useNavigate } from 'react-router-dom';
 
 interface SidebarProps {
     isOpen?: boolean;
     onToggle?: () => void;
+    service?: any; // Add service prop to access logout
 }
 
-const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
+const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle, service }) => {
     const [activeTab, setActiveTab] = useState('Home');
-
+    const navigate = useNavigate();
     // 2. Inserted 'Tests' into the menuItems array
     const menuItems = [
         { name: 'Home', icon: <Home size={20} />, path: '/employee-profile' },
         { name: 'Algorithms', icon: <Cpu size={20} />, path: '/algos' },
         { name: 'Tests', icon: <Beaker size={20} />, path: '/test-dashboard' }, // New Section
-        { name: 'Metrics', icon: <BarChart2 size={20} />, path: '/metrics' },
+        //{ name: 'Metrics', icon: <BarChart2 size={20} />, path: '/metrics' },
         { name: 'Settings', icon: <Settings size={20} />, path: '/settings' },
     ];
+
+    const handleLogout = () => {
+        service.logout();
+        navigate('/');
+    }
 
     return (
         <aside 
@@ -38,7 +44,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
                 
                 <button 
                     onClick={onToggle}
-                    className={`absolute right-4 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-[#7964E3]/20 transition-all z-50`}
+                    className={`absolute right-4 top-1/2 -translate-y-1/2 p-1.5 rounded-lg bg-white/5 text-gray-400 hover:text-white hover:bg-[#7964E3]/20 transition-all z-50 hover:cursor-pointer`}
                 >
                     {isOpen ? <ChevronLeft size={18} /> : <ChevronRight size={18} />}
                 </button>
@@ -101,7 +107,9 @@ const Sidebar: React.FC<SidebarProps> = ({ isOpen = true, onToggle }) => {
                 </div>
                 
                 {isOpen && (
-                    <button className="mt-4 w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-400/10 transition-colors text-sm font-medium">
+                    <button 
+                    className="mt-4 w-full flex items-center justify-center gap-2 py-2 px-4 rounded-lg text-gray-400 hover:text-red-400 hover:bg-red-400/10 transition-colors text-sm font-medium hover:cursor-pointer"
+                    onClick={() => handleLogout()}>
                         <LogOut size={16} />
                         <span>Logout</span>
                     </button>

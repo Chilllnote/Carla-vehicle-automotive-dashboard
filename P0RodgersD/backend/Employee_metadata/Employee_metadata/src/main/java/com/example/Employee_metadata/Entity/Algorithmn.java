@@ -3,6 +3,8 @@ package com.example.Employee_metadata.Entity;
 import java.util.List;
 
 import com.example.Employee_metadata.Enums.AlgorithmType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -35,8 +37,10 @@ public class Algorithmn {
 
     @ManyToOne()
     @JoinColumn(name = "employee_id")
+    @JsonIgnore
     private Employee employee;
 
+    @JsonIgnore
     @OneToMany(mappedBy = "algorithmn")
     private List<Tests> tests;
 
