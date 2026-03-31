@@ -1,0 +1,8 @@
+fastapi
+uvicorn[standard]
+pydantic
+carla
+numpy
+shapely
+networkx
+pygame

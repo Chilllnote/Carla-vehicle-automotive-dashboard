@@ -1,0 +1,63 @@
+# Stage 1: Build the application using Maven
+# Starts with an image that has Maven (the build tool) and the Java 25 JDK (the compiler) pre-installed. We name this stage build so we can reference it later.
+FROM maven:3.9-eclipse-temurin-25 AS build
+
+# Creates a folder named /app inside the container. All following commands happen inside this folder.
+WORKDIR /app
+
+# Copies only your pom.xml from your computer into the container.
+COPY pom.xml .
+
+
+# Download dependencies first (great for build caching)
+# Maven downloads every library your project needs.
+# By doing this before copying your source code, Docker "caches" these libraries.
+RUN mvn dependency:go-offline
+
+# Now that the libraries are ready, we copy your actual Java source code.
+COPY src ./src
+
+
+# The "Cooking" step. 
+# Maven compiles the code and packages it into a .jar file located in the target/ folder.
+RUN mvn clean package -DskipTests
+
+# Stage 2: Create the runtime image
+# We will create the runtime environment using a smaller image that only has the Java 25 JRE (the runtime).
+
+#Starts a fresh, tiny image. 
+# It uses JRE (Java Runtime Environment), which can run Java but can't compile it.
+FROM eclipse-temurin:25-jre-alpine
+
+# Sets the working directory again for the new, clean environment.
+WORKDIR /app
+
+# The "Hand-off." 
+# This reaches back into the build stage, grabs the finished .jar file from the target folder, and pulls it into this new image, renaming it app.jar.
+COPY --from=build /app/target/*.jar app.jar
+
+# Expose your Spring Boot port (usually 8080)
+EXPOSE 8080
+
+# Run the jar
+# The "Start" button. When you run this container, it will execute this command, which starts your Spring Boot application.
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+# ---------------------
+
+
+# Best practice with dockerfile
+
+# Create compiled artifact to use in runtime environment
+# 1. Get a base image with JDK for building
+# 2. Create a working directory
+# 3. Copy only pom.xml first to leverage Docker cache for dependencies
+# 4. Run mvn dependency:go-offline to download dependencies (cached)
+# 5. Copy source code and build the jar
+
+# Create a runtime image
+# 1. Start with a smaller JRE image for runtime
+# 2. Set working directory
+# 3. Copy the built jar from the build stage
+# 4. Expose the application port
+# 5. Set the entry point to run the jar when the container starts
