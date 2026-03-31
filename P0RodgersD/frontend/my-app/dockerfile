@@ -1,0 +1,27 @@
+# Use a specific version for consistency
+FROM node:20-alpine
+
+# Create app directory
+WORKDIR /app
+
+# 1. Cache dependencies: Copy only package files first
+# This ensures 'npm install' only runs if you change your dependencies
+COPY package*.json ./
+
+# Install dependencies (frozen lockfile for consistency)
+RUN npm install
+
+# 2. Copy the rest of your frontend source code
+COPY . .
+
+# 3. Build the app 
+# (Even if using 'npm run dev', having the build step ready is good practice)
+RUN npm run build
+
+# Expose the port your dev server or preview server uses
+# Usually 3000 for CRA or 5173 for Vite
+EXPOSE 5173
+
+# Using 'npm run dev' as requested
+# --host is often required for Vite/Next to be accessible outside the container
+CMD ["npm", "run", "dev", "--", "--host"]

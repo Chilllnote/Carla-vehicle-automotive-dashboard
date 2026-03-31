@@ -1,9 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import { Brain, Car, ShieldCheck, Zap, Activity, ChevronRight, BarChart3 } from 'lucide-react';
-
-// Types for your AI Library
-type AlgoStats = { passRate: number; failRate: number; avgLatency: ms; };
-type AIAlgo = { id: string; name: string; category: string; description: string; stats: AlgoStats; };
+import type { AIAlgo, ms } from '../../dtos/type';
 
 const ALGO_LIBRARY: AIAlgo[] = [
   { 
