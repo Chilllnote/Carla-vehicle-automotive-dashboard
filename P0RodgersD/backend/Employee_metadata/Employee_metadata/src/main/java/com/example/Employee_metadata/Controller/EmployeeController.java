@@ -69,6 +69,11 @@ public class EmployeeController {
         return ResponseEntity.ok(noteService.getNotesByEmployeeUsername(username));
     }
 
+    @GetMapping("/previous-tests")
+    public ResponseEntity<List<NoteDTO.SentNoteDTO>> getPreviousTests(@RequestParam("username") String username) {
+        return ResponseEntity.ok(noteService.getNotesByEmployeeUsername(username));
+    }
+
     // ============================================================================
     // These are the post methods for the employee controller
     // ============================================================================

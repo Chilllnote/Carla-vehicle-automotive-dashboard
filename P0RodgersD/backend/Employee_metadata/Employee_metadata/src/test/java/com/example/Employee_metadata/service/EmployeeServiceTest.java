@@ -21,12 +21,13 @@ import com.example.Employee_metadata.Entity.Employee;
 import com.example.Employee_metadata.Repository.EmployeeRepository;
 import com.example.Employee_metadata.Service.EmployeeService;
 
+// @DataJPATest // This is for testing the repository layer, not the service layer. We want to test the service layer with a mocked repository, so we won't use this annotation here.
 @ExtendWith(MockitoExtension.class)
 public class EmployeeServiceTest {
 
     @Mock
     EmployeeRepository employeeRepository;
-    
+
     @InjectMocks
     EmployeeService employeeService;
 
@@ -60,9 +61,13 @@ public class EmployeeServiceTest {
                 .build();
     }
 
+    // Checking to see if the flow with the real service and mocked repository works
+    // as expected
     @Test
     void testAddEmployee_Success() {
         // 1. ARRANGE: Mock the Repository ONLY
+        // We trust the respository will do its job, so we mock it to return the
+        // Employee we expect to be saved when the service calls it.
         Mockito.when(employeeRepository.save(any(Employee.class))).thenReturn(savedRepoEmployee);
 
         // 2. ACT: Call the REAL service
@@ -74,7 +79,6 @@ public class EmployeeServiceTest {
         Assertions.assertEquals("John Doe", result.getName());
         Assertions.assertEquals("Engineering", result.getDepartment());
     }
-
 
     // @Test
     // void testAuthenticateEmployee() {
