@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert
+    kompose.version: 1.38.0 (a8f5d1cbd)
+  labels:
+    io.kompose.service: spring-backend
+  name: spring-backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: spring-backend
+  template:
+    metadata:
+      annotations:
+        kompose.cmd: C:\ProgramData\chocolatey\lib\kubernetes-kompose\tools\kompose.exe convert
+        kompose.version: 1.38.0 (a8f5d1cbd)
+      labels:
+        io.kompose.service: spring-backend
+    spec:
+      containers:
+        - env:
+            - name: SPRING_DATASOURCE_PASSWORD
+              value: password123
+            - name: SPRING_DATASOURCE_URL
+              value: jdbc:postgresql://db:5432/algo_test_db
+            - name: SPRING_DATASOURCE_USERNAME
+              value: donovr
+            - name: SPRING_JPA_HIBERNATE_DDL_AUTO
+              value: update
+          image: spring-backend:latest
+          name: spring-backend
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+              protocol: TCP
+      restartPolicy: Always
