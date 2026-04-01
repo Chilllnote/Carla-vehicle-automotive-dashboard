@@ -1,0 +1,29 @@
+version: "3.0"
+
+tasks:
+  # 1. LINT AND TEST THE SPRING BOOT BACKEND
+  backend-java:
+    dir: backend/Employee_metadata/Employee_metadata
+    cmds:
+      - mvn test
+
+  # 2. LINT AND TEST THE FASTAPI SERVICE (Python)
+  fastapi-python:
+    desc: "Install FastAPI dependencies using Python 3.12"
+    dir: backend/FastAPIEnv
+    cmds:
+      # Use 'py -3.12' to force the specific version on Windows
+      - py -3.12 -m pip install --upgrade pip
+      - py -3.12 -m pip install -r requirements.txt
+      - py -3.12 -m pip install ruff pytest
+    sources:
+      - requirements.txt # Only runs if requirements.txt has changed
+    status:
+      - test -d .venv
+
+  # 3. LINT THE REACT FRONTEND
+  frontend-react:
+    dir: frontend/my-app
+    cmds:
+      - npm install
+      - npm run lint
