@@ -76,4 +76,27 @@ public class EmployeeDTO {
         private List<AlgorithmnDTOs.AlgorithmSummaryDTO> algorithm;
     }
 
+    @Data
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class RecievedEmployeeDTO {
+
+        @NotBlank(message = "Name cannot be empty")
+        private String name;
+
+        @NotBlank(message = "Username cannot be empty")
+        private String username;
+
+        @NotBlank(message = "Password cannot be empty")
+        private String password;
+
+        @Email(message = "Invalid email format")
+        @NotBlank(message = "Email is required")
+        private String email;
+
+        private String department;
+        private String role;
+    }
+
 }

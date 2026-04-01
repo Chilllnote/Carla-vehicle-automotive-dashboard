@@ -69,6 +69,10 @@ public class EmployeeController {
         return ResponseEntity.ok(noteService.getNotesByEmployeeUsername(username));
     }
 
+    // ============================================================================
+    // These are the post methods for the employee controller
+    // ============================================================================
+
     @PostMapping("/add-note")
     public ResponseEntity<String> addNote(@RequestBody NoteDTO.RecievedNoteDTO recievedNoteDTO) {
         try {
@@ -78,6 +82,12 @@ public class EmployeeController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(Response.SC_BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @PostMapping("/add-employee")
+    public ResponseEntity<EmployeeDTO.EmployeeAlgoDTO> addEmployee(
+            @RequestBody EmployeeDTO.RecievedEmployeeDTO employeeNoAlgoDTO) {
+        return ResponseEntity.ok(employeeService.addEmployee(employeeNoAlgoDTO));
     }
 
 }
