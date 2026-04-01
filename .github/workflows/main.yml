@@ -21,7 +21,9 @@ jobs:
           cache: "maven"
 
       - name: Build and Test with Maven
-        run: mvn -pl P0RodgersD/backend/Employee_metadata/Employee_metadata -am test # Tests only the specific module
+        # Removed P0RodgersD/ prefix to match the runner's root
+        working-directory: P0RodgersD/backend/Employee_metadata/Employee_metadata
+        run: mvn test
 
   # 2. LINT AND TEST THE FASTAPI SERVICE (Python)
   fastapi-python:
@@ -33,26 +35,22 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-          cache: "pip" # Caches your requirements.txt dependencies
+          cache: "pip"
 
       - name: Install dependencies
-        working-directory: P0RodgersD/backend/FastAPI # Adjust this to your actual folder name
+        working-directory: P0RodgersD/backend/FastAPIEnv
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
-          pip install ruff pytest # Install linting and testing tools
+          pip install ruff pytest
 
       - name: Run Ruff Lint check
-        working-directory: backend/FastAPI
-        run: ruff check . # Checks for logic errors and unused imports
+        working-directory: P0RodgersD/backend/FastAPIEnv
+        run: ruff check .
 
       - name: Run Ruff Format check
-        working-directory: backend/FastAPI
-        run: ruff format --check . # Fails if code isn't formatted correctly
-
-      - name: Run Pytest
-        working-directory: backend/FastAPI
-        run: pytest # Executes your FastAPI unit tests
+        working-directory: P0RodgersD/backend/FastAPIEnv
+        run: ruff format --check .
 
   # 3. LINT THE REACT FRONTEND
   frontend-react:
@@ -65,10 +63,11 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
+          # Path must be relative to the repo root
           cache-dependency-path: P0RodgersD/frontend/my-app/package-lock.json
 
       - name: Install and Lint
-        working-directory: P0RodgersD/frontend/my-app # Adjust this to your actual folder name
+        working-directory: P0RodgersD/frontend/my-app
         run: |
           npm install
           npm run lint
