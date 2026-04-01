@@ -1,0 +1,72 @@
+name: CI - Lint and Test
+
+on:
+  pull_request:
+    branches: [ main, master, saturday-workings ]
+
+jobs:
+  # 1. LINT AND TEST THE SPRING BOOT BACKEND
+  backend-java:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Build and Test with Maven
+        run: mvn -pl backend/Employee_metadata/Employee_metadata -am test # Tests only the specific module
+        
+  # 2. LINT AND TEST THE FASTAPI SERVICE (Python)
+  fastapi-python:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip' # Caches your requirements.txt dependencies
+
+      - name: Install dependencies
+        working-directory: backend/FastAPI # Adjust this to your actual folder name
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install ruff pytest # Install linting and testing tools
+
+      - name: Run Ruff Lint check
+        working-directory: backend/FastAPI
+        run: ruff check . # Checks for logic errors and unused imports
+
+      - name: Run Ruff Format check
+        working-directory: backend/FastAPI
+        run: ruff format --check . # Fails if code isn't formatted correctly
+
+      - name: Run Pytest
+        working-directory: backend/FastAPI
+        run: pytest # Executes your FastAPI unit tests
+
+  # 3. LINT THE REACT FRONTEND
+  frontend-react:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+          cache-dependency-path: p0rodgersd-frontend/package-lock.json
+
+      - name: Install and Lint
+        working-directory: p0rodgersd-frontend
+        run: |
+          npm install
+          npm run lint
