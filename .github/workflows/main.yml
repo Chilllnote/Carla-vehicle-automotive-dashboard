@@ -10,6 +10,15 @@ jobs:
   # 1. LINT AND TEST THE SPRING BOOT BACKEND
   backend-java:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_DB: EmployeeMetaData
+          POSTGRES_USER: dev_user
+          POSTGRES_PASSWORD: dev_password
+        ports:
+          - 5432:5432
     steps:
       - uses: actions/checkout@v4
 
