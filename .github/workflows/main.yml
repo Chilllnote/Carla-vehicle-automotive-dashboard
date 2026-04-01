@@ -21,7 +21,7 @@ jobs:
           cache: "maven"
 
       - name: Build and Test with Maven
-        run: mvn -pl backend/Employee_metadata/Employee_metadata -am test # Tests only the specific module
+        run: mvn -pl P0RodgersD/backend/Employee_metadata/Employee_metadata -am test # Tests only the specific module
 
   # 2. LINT AND TEST THE FASTAPI SERVICE (Python)
   fastapi-python:
@@ -36,7 +36,7 @@ jobs:
           cache: "pip" # Caches your requirements.txt dependencies
 
       - name: Install dependencies
-        working-directory: backend/FastAPI # Adjust this to your actual folder name
+        working-directory: P0RodgersD/backend/FastAPI # Adjust this to your actual folder name
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -65,10 +65,10 @@ jobs:
         with:
           node-version: "20"
           cache: "npm"
-          cache-dependency-path: p0rodgersd-frontend/package-lock.json
+          cache-dependency-path: P0RodgersD/frontend/my-app/package-lock.json
 
       - name: Install and Lint
-        working-directory: p0rodgersd-frontend
+        working-directory: P0RodgersD/frontend/my-app # Adjust this to your actual folder name
         run: |
           npm install
           npm run lint
