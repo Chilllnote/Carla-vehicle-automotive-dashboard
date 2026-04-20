@@ -1,5 +1,7 @@
 package com.example.Employee_metadata.Service;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,18 +40,17 @@ public class EmployeeService {
                                 .password(employee.getPassword())
                                 .department(employee.getDepartment())
                                 .role(employee.getRole())
-                                .note(employee.getNotes().stream().map(
+                                .note(employee.getNotes() != null ? employee.getNotes().stream().map(
                                                 note -> new NoteDTO.SentNoteDTO(
                                                                 note.getId(),
                                                                 note.getTitle(),
                                                                 note.getDescription(),
                                                                 note.getEmployee().getUsername(),
                                                                 note.getCreatedAt()))
-                                                .toList())
-                                .algorithm(
-                                                employee.getAlgorithmns().stream()
-                                                                .map(this::convertAlgorithmnToSummaryDto)
-                                                                .toList())
+                                                .toList() : null)
+                                .algorithm(employee.getAlgorithmns() != null ? employee.getAlgorithmns().stream()
+                                                .map(this::convertAlgorithmnToSummaryDto)
+                                                .toList() : null)
                                 .build();
         }
 
@@ -91,5 +92,20 @@ public class EmployeeService {
                                                                                    // Security/BCrypt)
                                 .map(this::convertToDto)
                                 .orElseThrow(() -> new RuntimeException("Invalid username or password"));
+        }
+
+        public EmployeeAlgoDTO addEmployee(EmployeeDTO.RecievedEmployeeDTO employeeNoAlgoDTO) {
+                // Implementation to add a new employee
+                Employee employee = Employee.builder()
+                                .name(employeeNoAlgoDTO.getName())
+                                .email(employeeNoAlgoDTO.getEmail())
+                                .username(employeeNoAlgoDTO.getUsername())
+                                .password(employeeNoAlgoDTO.getPassword())
+                                .department(employeeNoAlgoDTO.getDepartment())
+                                .role(employeeNoAlgoDTO.getRole())
+                                .build();
+                Employee savedEmployee = employeeRepository.save(employee);
+                System.out.println("Saved Employee: " + savedEmployee); // Debugging statement
+                return convertToDto(savedEmployee);
         }
 }

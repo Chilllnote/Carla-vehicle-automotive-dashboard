@@ -40,7 +40,7 @@ services:
       context: ./backend/FastAPIEnv
     container_name: fastapi-carla
     ports:
-      - "8000:8000"
+      - "8081:8081"
     environment:
       - CARLA_HOST=host.docker.internal
     networks:

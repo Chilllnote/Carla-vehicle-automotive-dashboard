@@ -2,6 +2,8 @@ import sys
 import os
 from pathlib import Path
 from xmlrpc import client
+import carla
+import os
 
 # 1. Get the path to where the 'agents' folder actually lives
 # We use Path(__file__) to make it work regardless of where you launch from
@@ -126,6 +128,9 @@ sockManager = ConnectionManager()
 # ======================================================
 @app.get("/")
 def read_root():
+    logger.info(f"CARLA library location: {carla.__file__}")
+    # If it's an .egg file, the version is usually in the filename
+    logger.info(f"Filename: {os.path.basename(carla.__file__)}")
     return {"Hello": "World"}
 
 
@@ -174,12 +179,14 @@ async def carla_ws_run(websocket: WebSocket, test_id: str):
     pygame.display.set_caption("Carla Bike Control")
     logger.info("Pygame initialized and window created.")
 
+    await sockManager.send_message(test_id, {"message": "Pygame setup complete, initializing CARLA..."})
+
     try:
         # ========= CARLA SETUP =========
         client = carla.Client("localhost", carla_params.port)
         client.set_timeout(50.0)
-        logger.info(f"Connected to CARLA on port {carla_params.port}")
-        logger.info(f"CARLA client initialized with world {client.get_world().get_map().name}")
+        logger.info(f"Client: {client.get_client_version()}")
+        logger.info(f"Server: {client.get_server_version()}")
         # Quick test of the socket
         await websocket.send_json({"message": "CARLA setup started"})
         # ========= Step 2: Load the world with the configurations from the request ===========
