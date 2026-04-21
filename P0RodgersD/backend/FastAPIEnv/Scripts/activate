@@ -39,10 +39,10 @@ deactivate nondestructive
 if [ "${OSTYPE:-}" = "cygwin" ] || [ "${OSTYPE:-}" = "msys" ] ; then
     # transform D:\path\to\venv to /d/path/to/venv on MSYS
     # and to /cygdrive/d/path/to/venv on Cygwin
-    export VIRTUAL_ENV=$(cygpath "C:\Users\donov\OneDrive\Documents\23 years old\code\P0 improved\P0RodgersD\backend\FastAPIEnv")
+    export VIRTUAL_ENV=$(cygpath "C:\Users\donov\Documents\Code\Carla-vehicle-automotive-dashboard\P0RodgersD\backend\FastAPIEnv")
 else
     # use the path as-is
-    export VIRTUAL_ENV="C:\Users\donov\OneDrive\Documents\23 years old\code\P0 improved\P0RodgersD\backend\FastAPIEnv"
+    export VIRTUAL_ENV="C:\Users\donov\Documents\Code\Carla-vehicle-automotive-dashboard\P0RodgersD\backend\FastAPIEnv"
 fi
 
 _OLD_VIRTUAL_PATH="$PATH"
@@ -69,7 +69,6 @@ fi
 # past commands the $PATH changes we made may not be respected
 hash -r 2> /dev/null
 
-
 # --- CARLA PATHS AUTO-INJECT ---
 # linux
 #export CARLA_ROOT=/path/to/your/carla/installation 
@@ -84,7 +83,7 @@ hash -r 2> /dev/null
 #export PYTHONPATH="$PYTHONPATH;$CARLA_ROOT/PythonAPI/carla/dist/carla-<VERSION>.egg;$CARLA_ROOT/PythonAPI/carla/agents;$CARLA_ROOT/PythonAPI/carla"
 
 # Use forward slashes and quotes to handle the spaces in "23 years old"
-export CARLA_ROOT="C:/Users/donov/OneDrive/Documents/23 years old/code/P0 improved/P0RodgersD/backend/FastAPIEnv"
+export CARLA_ROOT="C:\Users\donov\Documents\Code\Carla-vehicle-automotive-dashboard\P0RodgersD\backend\FastAPIEnv"
 
 # We add the .egg, the API, the Agents, AND the Scenario Runner root
 export PYTHONPATH="$CARLA_ROOT/PythonAPI/carla/dist/carla-0.9.16-py3.12-win-amd64.egg;$CARLA_ROOT/PythonAPI/carla;$CARLA_ROOT/PythonAPI/carla/agents;$CARLA_ROOT/scenario_runner-0.9.16"

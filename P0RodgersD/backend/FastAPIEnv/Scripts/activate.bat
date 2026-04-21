@@ -8,7 +8,7 @@ if defined _OLD_CODEPAGE (
     "%SystemRoot%\System32\chcp.com" 65001 > nul
 )
 
-set VIRTUAL_ENV=C:\Users\donov\OneDrive\Documents\23 years old\code\P0 improved\P0RodgersD\backend\FastAPIEnv
+set VIRTUAL_ENV=C:\Users\donov\Documents\Code\Carla-vehicle-automotive-dashboard\P0RodgersD\backend\FastAPIEnv
 
 if not defined PROMPT set PROMPT=$P$G
 
